@@ -10,11 +10,8 @@
     _perFrameSpeed: 50,
     _friction: 25,
     _currentRotation: 0,
-    _currentX: 0,
-    _currentY: 0,
 
     init: function () {
-        this.origin(15, 15);
         this.vx = 0;
         this.vy = 0;
         this.ax = 0;
@@ -64,34 +61,28 @@
                 }
             }
 
-            // TODO: Rotate the object on changing direction. 
-            // NewDirection not working due to logging all direction changes.
-            //if ((isLeftPressed || isRightPressed) && (isUpPressed || isDownPressed)) {
-            //    if (isRightPressed) {
-            //        this.rotation = (isDownPressed) ? 45 : 135;
-            //    }
-            //    if (isLeftPressed) {
-            //        this.rotation = (isDownPressed) ? 315 : 225;
-            //    }
-            //} else if (isLeftPressed || isRightPressed) {
-            //    this.rotation = (isRightPressed) ? 270 : 90;
-            //} else if (isUpPressed || isDownPressed) {
-            //    this.rotation = (isDownPressed) ? 0 : 270;
-            //}
-        },
-        "NewDirection": function (e) {
-            console.log(e);
-            var x = e.x;
-            var y = e.y;
-            
-            if (x) {
-                this.ax = 0;
-                this.vx = 0;
+            if ((isLeftPressed || isRightPressed) && (isUpPressed || isDownPressed)) {
+                if (isRightPressed) {
+                    this.rotation = (isDownPressed) ? 45 : 135;
+                }
+                if (isLeftPressed) {
+                    this.rotation = (isDownPressed) ? 315 : 225;
+                }
+            } else if (isLeftPressed || isRightPressed) {
+                this.rotation = (isRightPressed) ? 270 : 90;
+            } else if (isUpPressed || isDownPressed) {
+                this.rotation = (isDownPressed) ? 0 : 270;
             }
-
-            if (y) {
-                this.ay = 0;
-                this.vy = 0;
+        },
+        "NewDirection": function () {
+            this.ax = 0;
+            this.vx = 0;
+            this.ay = 0;
+            this.vy = 0;
+        },
+        "Change": function (e) {
+            if (e.h && e.w) {
+                this.origin(e.w / 2, e.h / 2);
             }
         }
     },
@@ -138,9 +129,37 @@
         return (v > 0) ? 1 : (v < 0) ? -1 : 0;
     },
 
-    friction: function(frictionCoefficient) {
-        if (typeof(frictionCoefficient) === "number") {
-            this._friction = frictionCoefficient;
+    _representsNumber(n) {
+        return typeof (n) === "number";
+    },
+
+    friction: function (f) {
+        if (this._representsNumber(f)) {
+            this._friction = f;
+        }
+        return this;
+    },
+
+    maxSpeed: function (vx, vy, ax, ay) {
+        if (this._representsNumber(vx)) {
+            this._vx = vx;
+        }
+        if (this._representsNumber(vy)) {
+            this._vy = vy;
+        }
+        if (this._representsNumber(ax)) {
+            this._ax = ax;
+        }
+        if (this._representsNumber(ay)) {
+            this._ay = ay;
+        }
+        return this;
+    },
+
+    speed: function (s) {
+        if (this._representsNumber(s)) {
+            this._perFrameSpeed = s;
         }
     }
+
 });
